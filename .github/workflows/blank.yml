@@ -1,0 +1,29 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ $default-branch, "rag/merge-flow" ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        cache: gradle
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Test with Gradle
+      run: ./gradlew :app:testDebugUnitTest
